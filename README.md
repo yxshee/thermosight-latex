@@ -5,8 +5,6 @@ Welcome to the official repository for the ThermoSight Capstone Project Report! 
 <!-- Optional: Add a logo or banner image here -->
 <!-- ![Project Logo](path/to/your/logo.png) -->
 
-[![LaTeX Compile](https://github.com/yourusername/thermosight-latex/actions/workflows/latex.yml/badge.svg)](https://github.com/yourusername/thermosight-latex/actions/workflows/latex.yml) <!-- Replace with your actual GitHub Actions badge if you set up CI -->
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) <!-- Or your chosen license -->
 
 ## 🚀 Overview
 
