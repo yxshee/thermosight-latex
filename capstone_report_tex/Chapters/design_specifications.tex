@@ -1,5 +1,5 @@
 \subsection{System Architecture}
-The high‐level design (HLD) of ThermoSight is depicted through the following diagrams:
+The high‐level design (HLD) of ThermoSight is depicted through the following three diagrams:
 
 \subsubsection{Block Diagram}
 
@@ -7,7 +7,7 @@ As shown in Figure \ref{fig:ts_block}, ThermoSight integrates data acquisition, 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{thermosight_block.png}
+    \includegraphics[width=0.9\textwidth]{thermoblock.png}
     \caption{ThermoSight Block Diagram}
     \label{fig:ts_block}
 \end{figure}
@@ -19,190 +19,19 @@ Figure \ref{fig:ts_component} illustrates the main components and their interact
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{thermosight_component.png}
+    \includegraphics[width=\textwidth]{thermocomponent.png}
     \caption{ThermoSight Component Diagram}
     \label{fig:ts_component}
 \end{figure}
+\medskip
 
-\subsection{Design Level Diagrams}
+\subsubsection{Deployment Diagram}
 
-\subsubsection{Use Case Diagram}
-
-Figure \ref{fig:ts_use_case} shows the Use Case Diagram for ThermoSight, highlighting the roles of Inspector, Database, and Admin interacting with the system.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{thermosight_use_case.png}
-    \caption{ThermoSight Use Case Diagram}
-    \label{fig:ts_use_case}
-\end{figure}
-
-\subsubsection{Use Case Templates}
-
-Tables \ref{tab:image_upload}, \ref{tab:inference_request}, and \ref{tab:admin_manage} provide detailed use case templates for key functionalities:
-
-\begin{table}[h!]
-    \centering
-    \fontsize{10}{12}\selectfont
-    \caption{Image Upload \& Pre‐Processing Use Case}
-    \label{tab:image_upload}
-    \begin{tabular}{|l|p{10cm}|}
-        \hline
-        \textbf{Use Case}         & Image Upload \& Pre‐Processing                                        \\ \hline
-        \textbf{Description}      & Allows an Inspector to upload raw infrared images which are then pre‐processed and stored. \\ \hline
-        \textbf{Actor}            & Inspector, Database                                                   \\ \hline
-        \textbf{Normal Scenario}  &
-        \begin{enumerate}
-            \item Inspector logs into the GUI.
-            \item Inspector selects “Upload Image”.
-            \item System validates file format (PNG/JPEG/TIFF).
-            \item Pre‐processing module applies emissivity correction, median filtering, and resizing.
-            \item Processed image and metadata are saved to the Database.
-        \end{enumerate}                                                      \\ \hline
-        \textbf{Alternate Flow}   &
-        \begin{enumerate}
-            \item Uploaded file fails validation.
-            \item System displays an error message to the Inspector.
-        \end{enumerate}                                                      \\ \hline
-        \textbf{Extension Points} & Automatic metadata extraction from EXIF tags (camera model, timestamp). \\ \hline
-        \textbf{Pre‐conditions}   &
-        \begin{itemize}
-            \item Inspector has valid credentials.
-            \item Infrared image file exists on local device.
-        \end{itemize}                                                         \\ \hline
-        \textbf{Post‐conditions}  & Image is pre‐processed and stored; ready for inference.               \\ \hline
-    \end{tabular}
-\end{table}
-
-\newpage
-
-\begin{table}[h!]
-    \centering
-    \fontsize{10}{12}\selectfont
-    \caption{Inference Request \& Heatmap Generation Use Case}
-    \label{tab:inference_request}
-    \begin{tabular}{|l|p{10cm}|}
-        \hline
-        \textbf{Use Case}         & Inference Request \& Heatmap Generation                                 \\ \hline
-        \textbf{Description}      & The Inspector requests temperature classification; the system returns class label and Grad‐CAM heatmap. \\ \hline
-        \textbf{Actor}            & Inspector, Inference Engine, Database                                     \\ \hline
-        \textbf{Normal Scenario}  &
-        \begin{enumerate}
-            \item Inspector selects a pre‐processed image.
-            \item Inspector clicks “Run Inference”.
-            \item System sends image to ViT Inference Engine.
-            \item Model predicts one of four temperature classes.
-            \item Grad‐CAM generator creates heatmap overlay.
-            \item System displays predicted class and heatmap in GUI.
-            \item Results (class, confidence, heatmap) are stored in the Database.
-        \end{enumerate}                                                          \\ \hline
-        \textbf{Alternate Flow}   &
-        \begin{enumerate}
-            \item Model fails to load or inference times out.
-            \item System notifies the Inspector of failure and suggests retry.
-        \end{enumerate}                                                          \\ \hline
-        \textbf{Extension Points} & Batch inference for multiple images with aggregated report.               \\ \hline
-        \textbf{Pre‐conditions}   &
-        \begin{itemize}
-            \item Pre‐processed image available in Database.
-            \item ViT model is loaded and ready.
-        \end{itemize}                                                             \\ \hline
-        \textbf{Post‐conditions}  & Classification and heatmap are generated and presented to the Inspector.   \\ \hline
-    \end{tabular}
-\end{table}
-
-\newpage
-
-\begin{table}[h!]
-    \centering
-    \fontsize{10}{12}\selectfont
-    \caption{Admin Management Use Case}
-    \label{tab:admin_manage}
-    \begin{tabular}{|l|p{10cm}|}
-        \hline
-        \textbf{Use Case}         & Admin Management                                                    \\ \hline
-        \textbf{Description}      & Allows the Admin to manage user accounts, model versions, and system settings. \\ \hline
-        \textbf{Actor}            & Admin                                                               \\ \hline
-        \textbf{Normal Scenario}  &
-        \begin{enumerate}
-            \item Admin logs into the Admin Dashboard.
-            \item System verifies credentials.
-            \item Admin views list of registered Inspectors.
-            \item Admin can add, edit, or remove Inspector accounts.
-            \item Admin uploads new ViT model versions.
-            \item System updates version metadata and archives previous versions.
-            \item Admin adjusts system settings (e.g., confidence threshold, batch size).
-            \item System confirms changes.
-        \end{enumerate}                                                      \\ \hline
-        \textbf{Alternate Flow}   &
-        \begin{enumerate}
-            \item Admin attempts to remove a user with pending inference jobs.
-            \item System displays warning to resolve pending jobs first.
-        \end{enumerate}                                                      \\ \hline
-        \textbf{Extension Points} & Role‐based access control for different Admin levels (e.g., Super Admin, Auditor). \\ \hline
-        \textbf{Pre‐conditions}   &
-        \begin{itemize}
-            \item Admin is authenticated.
-            \item ViT model files are present for upload.
-        \end{itemize}                                                         \\ \hline
-        \textbf{Post‐conditions}  & User accounts, model versions, or settings are updated as specified.    \\ \hline
-    \end{tabular}
-\end{table}
-
-\subsubsection{Swimlane Diagram}
-
-Figure \ref{fig:ts_swimlane} depicts a Swimlane Diagram for ThermoSight, illustrating interactions among Inspector, Inference Engine, and Admin roles during key workflows.
+Figure \ref{fig:ts_deployment} shows the Deployment Diagram for ThermoSight, highlighting how the Web/Mobile UI interacts with the server backend, Vision Transformer model, and thermal image storage.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{thermosight_swimlane.png}
-    \caption{ThermoSight Swimlane Diagram}
-    \label{fig:ts_swimlane}
-\end{figure}
-
-\subsubsection{Class Diagram}
-
-Figure \ref{fig:ts_class} presents a Class Diagram for ThermoSight, showing core classes such as \texttt{Image}, \texttt{Preprocessor}, \texttt{ViTModel}, \texttt{Heatmap}, \texttt{Result}, \texttt{User}, and \texttt{Admin}, along with their associations.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{thermosight_class.png}
-    \caption{ThermoSight Class Diagram}
-    \label{fig:ts_class}
-\end{figure}
-
-\subsubsection*{Entity Relationship Diagram}
-
-Figure \ref{fig:ts_er} shows the Entity‐Relationship (E‐R) Diagram for the ThermoSight database schema, capturing entities such as \texttt{User}, \texttt{Image}, \texttt{InferenceResult}, and \texttt{ModelVersion}, with relationships and cardinalities.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{thermosight_er.png}
-    \caption{ThermoSight E‐R Diagram}
-    \label{fig:ts_er}
-\end{figure}
-
-\subsubsection{Data Flow Diagram}
-
-Figures \ref{fig:ts_dfd0}, \ref{fig:ts_dfd1}, and \ref{fig:ts_dfd2} illustrate the Data Flow Diagrams (DFD) at Levels 0, 1, and 2, respectively, depicting how data moves through the system from Upload to Inference and Reporting.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{thermosight_dfd0.png}
-    \caption{ThermoSight DFD Level 0}
-    \label{fig:ts_dfd0}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{thermosight_dfd1.png}
-    \caption{ThermoSight DFD Level 1}
-    \label{fig:ts_dfd1}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{thermosight_dfd2.png}
-    \caption{ThermoSight DFD Level 2}
-    \label{fig:ts_dfd2}
+    \includegraphics[width=\textwidth]{thermodeployment.png}
+    \caption{ThermoSight Deployment Diagram}
+    \label{fig:ts_deployment}
 \end{figure}
