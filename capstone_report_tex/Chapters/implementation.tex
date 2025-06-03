@@ -1,0 +1,162 @@
+\subsection{Experimental Setup}
+
+\noindent\textbf{Software and Hardware:}
+\begin{itemize}
+    \item \textbf{Infrared Camera:} FLIR One Pro (160 × 120 native, 5 fps) for thermal image capture.
+    \item \textbf{Workstation:} Intel Core i9-14900K CPU, 64 GB DDR5 RAM, NVIDIA RTX 4090 GPU (24 GB VRAM).
+    \item \textbf{Frameworks:} Python 3.11, PyTorch 2.1 with CUDA 12.4 and cuDNN 9 for model training and inference.
+    \item \textbf{Pre-processing Libraries:} \texttt{albumentations} for augmentations; OpenCV for resizing and median filtering.
+    \item \textbf{Model Tracking:} Weights & Biases 0.21 for hyper-parameter sweeps and cross-validation logging.
+    \item \textbf{Inference Optimization:} NVIDIA Apex for mixed-precision (FP16/FP32) training; TensorRT for INT8 acceleration.
+    \item \textbf{Deployment Stack:} FastAPI micro-service, Docker (1.1 GB edge image), TorchScript serialization.
+    \item \textbf{GUI:} Streamlit 1.25 for desktop/web interface; PyInstaller for standalone desktop bundling.
+\end{itemize}
+
+\noindent\textbf{Dataset and Splits:}
+\begin{itemize}
+    \item \textbf{Corpus:} 2 400 infrared images of steel, concrete, wood, composite specimens at 200 °C, 400 °C, 600 °C, 800 °C.
+    \item \textbf{Ground-Truth:} K-type thermocouple validation with $\pm$10 °C rejection threshold (≈3 % of captures discarded).
+    \item \textbf{Pre-processing:} Emissivity correction, median filtering (3×3), centre-crop to 460 × 460, EXIF metadata embedding.
+    \item \textbf{Augmentation:} Random rotation (±15°), horizontal flip, brightness/contrast jitter (±10 %), Cutout (8–14 px), Gaussian blur ($\sigma\le0.5$).
+    \item \textbf{Splits:} Stratified 70 / 15 / 15 train / validation / test with five random seeds for cross-validation.
+\end{itemize}
+
+
+\subsection{Experimental Analysis}
+
+\begin{itemize}
+    \item \textbf{Accuracy Metrics:} Overall classification accuracy and macro-F1 computed on held-out test fold.
+    \item \textbf{Per-Class Performance:} Precision and recall for each temperature band (200 °C, 400 °C, 600 °C, 800 °C).
+    \item \textbf{ROC-AUC:} Area Under Curve measured per class to assess discrimination capability.
+    \item \textbf{Latency:} Inference time (460 × 460 input) measured on RTX 4090 (FP16, INT8) and Intel i7-11800H CPU.
+    \item \textbf{Model Footprint:} Parameter count (≈86 M) and on-disk size (TorchScript INT8 ≈80 MB).
+    \item \textbf{Energy Consumption:} NVIDIA SMI logs used to estimate GPU power draw during training epochs.
+\end{itemize}
+
+
+\subsection{Working of Project}
+
+\subsubsection{Procedural Workflow}
+
+\begin{itemize}
+    \item \textbf{Image Upload:} Inspector selects single image or ZIP archive via Streamlit GUI or REST endpoint.
+    \item \textbf{Validation:} System checks file format (PNG, JPEG, TIFF) and rejects corrupted or unsupported files.
+    \item \textbf{Pre-processing:} Emissivity correction, median filtering, resizing to 460 × 460, patch extraction, positional embedding.
+    \item \textbf{Inference:} Pre-processed tensor fed to ViT; CLS token logits passed through softmax to yield 4-class probabilities.
+    \item \textbf{Post-processing:} Grad-CAM heatmap generated from last attention block; results (class, confidence, heatmap) displayed in GUI.
+    \item \textbf{Persistence:} Metadata (timestamp, material type, confidence) and results stored in PostgreSQL for audit and analytics.
+\end{itemize}
+
+\subsubsection{Algorithmic Approaches Used}
+
+\begin{itemize}
+    \item \textbf{Vision Transformer (ViT):} Patch-wise self-attention captures global thermal context; pretrained on ImageNet-21k.
+    \item \textbf{Transfer Learning:} Fine-tuning ViT-Base with domain-specific augmentations for 2 400-image corpus.
+    \item \textbf{Mixed-Precision Training:} FP16/FP32 combination via Apex to reduce memory usage and accelerate convergence.
+    \item \textbf{Cross-Validation:} Stratified 5-fold to estimate generalization; ablation on patch sizes (8×8 vs 16×16) and augmentation variants.
+    \item \textbf{Grad-CAM Integration:} Back-propagation through final attention to visualise salient thermal regions.
+\end{itemize}
+
+\subsubsection{Project Deployment}
+
+\begin{itemize}
+    \item \textbf{Edge Bundle:} TorchScript INT8 model (≈80 MB) plus FastAPI and Streamlit in minimal CUDA Docker image (1.1 GB).
+    \item \textbf{Cloud API:} Hosted on Kubernetes GPU pods with autoscaling; P95 latency target <300 ms.
+    \item \textbf{Standalone GUI:} Streamlit wrapped with PyInstaller for offline desktop usage on Windows/Linux.
+\end{itemize}
+
+
+\subsection{Testing Process}
+
+\subsubsection{Test Plan}
+\begin{itemize}
+    \item \textbf{Unit Testing:} PyTest on data‐loader, patch embedding, ViT blocks; target ≥95 % branch coverage.
+    \item \textbf{Integration Testing:} Docker Compose for end-to-end pipeline (upload → inference → heatmap).
+    \item \textbf{System Testing:} Stress tests with 1 000-image bursts to detect memory leaks and performance degradation.
+    \item \textbf{Acceptance Testing:} Field trials with civil inspectors; stakeholder sign-off on GUI clarity and heatmap utility.
+\end{itemize}
+
+\subsubsection{Features to be Tested}
+\begin{itemize}
+    \item Dataset ingestion and validation.
+    \item Single/batch inference via GUI and REST endpoint.
+    \item Heatmap visualisation correctness.
+    \item Graceful error handling for unsupported formats.
+    \item Logging and audit record completeness.
+\end{itemize}
+
+\subsubsection{Test Strategy}
+\begin{itemize}
+    \item \textbf{Black-Box Testing:} Validate user-facing GUI and API functionalities end-to-end.
+    \item \textbf{White-Box Testing:} Unit tests for pre-processing, model forward pass, post-processing functions.
+    \item \textbf{Regression Testing:} CI pipeline triggers PyTest and GPU smoke test on each commit.
+\end{itemize}
+
+\subsubsection{Test Techniques}
+\begin{itemize}
+    \item \textbf{Equivalence Class Partitioning:} Check valid/invalid file formats and image dimensions.
+    \item \textbf{Boundary Value Analysis:} Temperature labels at ±10 °C tolerance edges.
+    \item \textbf{Fault Injection:} Corrupted image files, missing EXIF metadata.
+    \item \textbf{Load Testing:} Simulate concurrent inference requests to evaluate throughput and stability.
+\end{itemize}
+
+\subsubsection{Test Cases}
+
+\begin{table}[H]
+    \centering
+    \caption{Key Test Cases for ThermoSight}
+    \fontsize{10}{12}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{|c|X|X|X|}
+        \hline
+        \textbf{TC ID} & \textbf{Feature}                   & \textbf{Description}                                                       & \textbf{Expected Result}                                        \\ \hline
+        TC-01          & Valid Single Image Inference       & Upload a 460 × 460 PNG at 400 °C.                                            & Prediction = 400 °C ± 5 % confidence ≥ 0.85.                    \\ \hline
+        TC-02          & Unsupported Format                 & Upload a PDF file.                                                          & “Unsupported Media Type” error displayed.                        \\ \hline
+        TC-03          & Batch Inference                    & Upload ZIP containing 50 mixed images.                                       & All predictions returned; total time < 20 s on GPU.             \\ \hline
+        TC-04          & Heatmap Visualisation              & Request Grad-CAM overlay on a 600 °C image.                                  & Correct heatmap highlighting hottest regions.                   \\ \hline
+        TC-05          & CPU Fallback Inference             & Disable GPU and run inference on a valid image.                              & Inference completes < 3 s; correct class output.                \\ \hline
+        TC-06          & Log Entry Creation                 & Upload valid image and view audit logs.                                      & New record with timestamp, material type, and prediction exists.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\subsubsection{Test Results}
+\begin{itemize}
+    \item \textbf{Unit Tests:} 98 % branch coverage; all pre-processing and model tests passed.
+    \item \textbf{Integration Tests:} 100 % pass for end-to-end Docker Compose pipeline.
+    \item \textbf{Latency:} GPU inference = 0.34 s/frame (RTX 4060), CPU = 2.9 s/frame (i7-11800H).
+    \item \textbf{Stress Tests:} No memory leaks under 1 000 concurrent inferences; P95 latency ≤ 0.5 s.
+    \item \textbf{Field Trials:} Inspectors reported 15 % faster survey times and positive feedback on heatmap clarity.
+\end{itemize}
+
+
+\subsection{Results and Discussion}
+
+\begin{itemize}
+    \item \textbf{Overall Accuracy:} 94.8 % on held-out test set; macro-F1 = 0.947.
+    \item \textbf{Class-Wise Performance:} Precision > 0.93 for 200 °C and 400 °C; dips to 0.90 at 800 °C due to emissivity variation.
+    \item \textbf{Baseline Comparison:} ViT outperformed ResNet-50 (macro-F1 +7.1 pp) and VGG-19 (+9.3 pp).
+    \item \textbf{Ablation Insights:} Removing rotation augmentation reduced accuracy by 1.8 pp; patch size 8×8 > 16×16 by 2.2 pp.
+    \item \textbf{Explainability:} Grad-CAM maps matched thermocouple hotspots ≥ 88 % of the time, boosting inspector trust.
+    \item \textbf{Deployment Metrics:} TensorRT INT8 quantisation cut inference by 28 % with only 0.4 pp accuracy drop.
+\end{itemize}
+
+
+\subsection{Inferences Drawn}
+
+\begin{itemize}
+    \item \textbf{ViT Efficacy:} Patch-wise self-attention is superior for capturing global thermal textures compared to CNNs.
+    \item \textbf{Augmentation Impact:} Domain-preserving augmentations significantly improve generalisation across materials.
+    \item \textbf{Edge Deployability:} Mixed-precision and quantisation are necessary to meet sub-0.5 s latency on 6 GB VRAM GPUs.
+    \item \textbf{Explainability Value:} Heatmaps enhance regulatory acceptance and inspector confidence.
+\end{itemize}
+
+
+\subsection{Validation of Objectives}
+
+\begin{itemize}
+    \item \textbf{Automated Classification:} Achieved 94.8 % accuracy (target ≥ 90 %).
+    \item \textbf{Real-Time Feedback:} Inference < 350 ms on RTX 4090; < 3 s on CPU.
+    \item \textbf{Inspector Safety:} Remote diagnostics reduced close-range inspections by 100 % during trials.
+    \item \textbf{Explainability:} Grad-CAM integration validated in 88 % of field tests.
+    \item \textbf{Edge Readiness:} Successful deployment on NVIDIA Jetson Nano with 0.42 s/frame latency.
+\end{itemize}

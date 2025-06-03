@@ -1,0 +1,103 @@
+\documentclass{capstone} % Use the custom class
+\usepackage[title]{appendix}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{tocloft}
+\usepackage{kantlipsum}
+\usepackage{mathptmx}
+\usepackage[utf8x]{inputenc}
+\usepackage{cite}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{datetime}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{longtable}
+\usepackage{lscape}
+\usepackage{pdfpages}
+
+\graphicspath{{./images/}}
+
+% this is for list of figures and tables
+\makeatletter
+\renewcommand\l@figure[2]{\@dottedtocline{1}{3.0em}{1.5em}{\hspace*{-3.15em}Figure #1}{#2}}
+\renewcommand\l@table[2]{\@dottedtocline{1}{3.0em}{1.5em}{\hspace*{-3.15em}Table #1}{#2}}
+\makeatother
+
+\captionsetup{font=footnotesize}
+\begin{document}
+\pagenumbering{roman}
+\input{Chapters/cover}
+\newpage
+
+\sectnormal{ABSTRACT}
+\input{Chapters/abstract}
+\sectnormal{DECLARATION}
+\input{Chapters/declaration}
+\sectnormal{ACKNOWLEDGEMENT}
+\input{Chapters/acknowledgement}
+
+
+% Table of Contents
+\newpage
+\tableofcontents
+\newpage
+\sectnormal{LIST OF TABLES}
+\vspace{-2em}
+\listoftables
+\sectnormal{LIST OF FIGURES}
+\vspace{-2em}
+\listoffigures
+\sectnormal{LIST OF ABBREVIATIONS}
+\input{Chapters/abbr}
+
+\renewcommand{\arraystretch}{1.5}
+
+
+
+% Contents Start from here, so 1,2,3,4 yahan se hoga
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{section}{0} % Reset section numbering to start from 1
+\sect{Introduction}
+\input{Chapters/introduction}
+\sect{Requirement Analysis}
+\input{Chapters/requirement_analysis}
+\sect{Methodology Adopted}
+\input{Chapters/methodology}
+\sect{Design Specifications}
+\input{Chapters/design_specifications}
+\sect{Implementation and Experimental Results}
+\input{Chapters/implementation}
+\sect{Conclusions and Future Scope}
+\input{Chapters/conclusion}
+\sect{Project Metrics}
+\input{Chapters/metrics}
+
+% Finally found how to fix appendices:
+% ref https://latex.org/forum/viewtopic.php?t=8850
+\appendixtitleon
+\appendixtitletocon
+\begin{appendices}
+    \newpage
+    \addcontentsline{toc}{section}{A: REFERENCES}
+    \bibliographystyle{IEEEtran}
+    \bibliography{references}
+    \newpage
+    \addcontentsline{toc}{section}{B: Plagiarism Report}
+    \includepdf[pages=-]{Chapters/plag/plagreport.pdf}
+\end{appendices}
+
+\end{document}

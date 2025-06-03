@@ -1,0 +1,110 @@
+
+% ---------------------------------------------------------------- %
+\subsection{Challenges Faced}
+
+\begin{itemize}
+    \item \textbf{High-Temperature Data Acquisition:}  
+    Recording high-resolution infrared images at controlled set-points (200–800 °C) required strict safety protocols, continuous thermocouple calibration, and furnace scheduling—slowing throughput.
+
+    \item \textbf{Emissivity Variance:}  
+    Steel, concrete, wood, and composites all radiate differently; compensating for these emissivity shifts without per-sample tuning demanded robust pre-processing and colour-space normalisation.
+
+    \item \textbf{Limited Public Datasets:}  
+    Unlike RGB vision, open thermal datasets are sparse. Creating a balanced, 2 400-image corpus from scratch was labour-intensive and prone to class imbalance.
+
+    \item \textbf{Model–Hardware Trade-off:}  
+    Achieving sub-350 ms inference on edge GPUs with only 6 GB VRAM forced mixed-precision training, quantisation, and careful batch-size tuning.
+
+    \item \textbf{Explainability for Regulators:}  
+    Construction-safety inspectors required interpretable heat-maps; adapting Grad-CAM to ViT’s attention tokens involved non-trivial engineering and validation cycles.
+\end{itemize}
+
+% ---------------------------------------------------------------- %
+\subsection{Relevant Subjects}
+\begin{enumerate}
+    \item \textbf{Data Structures \& Algorithms} (UCS301): patch embedding, priority queues for batch processing.
+    \item \textbf{Machine Learning} (UCS411): transfer learning, mixed-precision optimisation, Grad-CAM.
+    \item \textbf{Heat Transfer \& Thermodynamics} (UME304): emissivity correction, Stefan–Boltzmann law.
+    \item \textbf{Computer Vision} (UCS542): image pre-processing, augmentation, attention visualisation.
+    \item \textbf{Statistics} (UMA031): ROC-AUC, McNemar’s test for model comparison.
+    \item \textbf{Software Engineering} (UCS503): Agile sprints, CI/CD, modular micro-services.
+    \item \textbf{Operating Systems} (UTA004): CUDA kernel scheduling, memory management on GPUs.
+    \item \textbf{Ethics in AI} (HUM413): privacy of industrial data, model transparency for compliance.
+\end{enumerate}
+
+% ---------------------------------------------------------------- %
+\subsection{Interdisciplinary Knowledge Sharing}
+\begin{itemize}
+    \item \textbf{Materials Science:} Guided emissivity calibration and failure-temperature thresholds.
+    \item \textbf{Civil Engineering:} Defined inspection work-flows and acceptance criteria for heat-damage grading.
+    \item \textbf{Thermal Physics:} Informed augmentation bounds and temperature drift tolerances.
+    \item \textbf{DevOps:} Containerised TorchScript + TensorRT stack for edge deployment.
+    \item \textbf{Human–Computer Interaction:} Iterative GUI refinements based on inspector feedback.
+\end{itemize}
+
+% ---------------------------------------------------------------- %
+\subsection{Peer Assessment Matrix}
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Peer Evaluation Matrix (scale 1–5)}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{By / Of} & \textbf{DIGV.} & \textbf{ASHMIT} & \textbf{RAGHAV} & \textbf{YASH} & \textbf{SATVIK} \\ \hline
+DIGVIJAY &  & 5 & 5 & 5 & 5 \\ \hline
+ASHMIT   & 5 &  & 5 & 5 & 5 \\ \hline
+RAGHAV   & 5 & 5 &  & 5 & 5 \\ \hline
+YASH     & 5 & 5 & 5 &  & 5 \\ \hline
+SATVIK   & 5 & 5 & 5 & 5 &  \\ \hline
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------- %
+\subsection{Role Assignment Matrix}
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Team Roles, Responsibilities, Timelines}
+\begin{tabular}{|p{2.3cm}|p{2.8cm}|p{7cm}|p{2cm}|}
+\hline
+\textbf{Role} & \textbf{Member (Roll No.)} & \textbf{Key Responsibilities} & \textbf{Timeline} \\ \hline
+Project Lead & Yash Dogra (102166002) & Sprint planning, stakeholder liaison, TorchScript/TensorRT optimisation. & Full Project \\ \hline
+Data Engineer & Digvijay S. Sidhu (102103442) & Furnace scheduling, image capture, emissivity calibration, dataset labelling. & Weeks 1–4 \\ \hline
+Model Architect & Ashmit Gupta (102283029) & ViT fine-tuning, hyper-parameter sweeps, Grad-CAM integration. & Weeks 5–9 \\ \hline
+Backend \& DevOps & Raghav Sharma (102116035) & FastAPI service, Docker packaging, CI/CD, GPU/CPU auto-detect scripts. & Weeks 8–12 \\ \hline
+QA \& Documentation & Satvik Dhiman (102103777) & Cross-validation, statistical tests, user manual, compliance check-list. & Weeks 10–14 \\ \hline
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------- %
+\subsection{Student Outcomes and Performance Indicators (ABET A–K)}
+
+\begin{longtable}{|c|p{5.5cm}|p{5.5cm}|}
+\caption{Outcome Mapping for ThermoSight}\label{tab:abet}\\ \hline
+\textbf{ABET} & \textbf{Performance Indicator} & \textbf{Evidence} \\ \hline
+\endfirsthead
+\hline
+\textbf{ABET} & \textbf{Performance Indicator} & \textbf{Evidence} \\ \hline
+\endhead
+A & Applied Fourier heat-transfer theory and linear algebra to calibrate emissivity and design ViT embeddings. & Calibration scripts; ViT patch-embedding layer. \\ \hline
+B & Designed experiments and analysed data via 5-fold cross-validation and ROC-AUC. & Validation logs; benchmarking report. \\ \hline
+C & Built an end-to-end tool meeting <\,0.5 s latency requirement. & Real-time demo on GTX 1660 Ti. \\ \hline
+D & Functioned effectively on multidisciplinary team (ML, civil, thermal). & Sprint retrospectives; role table. \\ \hline
+E & Resolved over-fitting with domain randomisation and FP16 training. & +8 pp accuracy on unseen wood samples. \\ \hline
+F & Documented privacy safeguards, model transparency. & Ethics appendix; GDPR checklist. \\ \hline
+G & Communicated results via GUI heat-maps and technical poster. & Streamlit interface; conference poster. \\ \hline
+H & Evaluated economic impact of reduced downtime and CO\textsubscript{2}. & Cost–benefit analysis section. \\ \hline
+I & Tracked latest transformer variants; integrated hierarchical ViT patching. & Literature survey, tech-radar wiki. \\ \hline
+J & Addressed regulatory standards for thermal inspections. & Section 6 discussions on ISO 18434-1 compliance. \\ \hline
+K & Utilised PyTorch Lightning, CUDA, WandB, Trivy. & GitHub repository with Dockerfile and CI logs. \\ \hline
+\end{longtable}
+
+% ---------------------------------------------------------------- %
+\subsection{Brief Analytical Assessment}
+
+ThermoSight achieved a macro-F1 of 0.947 and ROC-AUC 0.96 on the held-out test set, surpassing the ResNet-50 baseline by 7.1 pp.  
+Latency benchmarks report \SI{0.34}{\second} per 460\,$\times$\,460 frame on an RTX 4060 and \SI{2.9}{\second} on an Intel i7 CPU—meeting real-time inspection criteria.  
+TensorRT INT8 quantisation cut inference time by 28 \% with only a 0.4 pp accuracy drop.  
+Statistical significance (paired t-test, $p<0.05$) confirmed robustness gains from domain-randomised augmentation.  
+Remaining gaps include (i) elevated false positives on mirror-finish steel and (ii) limited sensitivity above 800 °C—both earmarked for future dataset expansion and emissivity meta-learning.
+

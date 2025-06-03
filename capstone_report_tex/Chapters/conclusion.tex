@@ -1,0 +1,42 @@
+\subsection{Conclusions}
+ThermoSight demonstrates a high‐precision, Vision Transformer‐based solution for non‐contact thermal exposure assessment of construction materials. The system achieves 94.8 \% classification accuracy across four critical temperature bands (200 °C–800 °C), with sub‐350 ms inference latency on commodity GPUs. By leveraging patch‐wise self‐attention and transfer learning, ThermoSight outperforms classical CNN baselines while maintaining robustness against emissivity variance and material heterogeneity. The user‐friendly Streamlit GUI and REST API satisfy real‐time inspection requirements, making ThermoSight a practical tool for field engineers and maintenance teams.
+
+\subsection{Environmental, Economic and Societal Benefits}
+\begin{itemize}
+    \item \textbf{Environmental Benefits:}  
+    Early detection of heat‐induced material degradation reduces unnecessary demolition and reconstruction, thereby lowering embodied carbon and construction waste. Non‐intrusive infrared scanning preserves site ecology by avoiding destructive sampling.  
+    \item \textbf{Economic Gains:}  
+    Rapid on‐site thermal diagnostics minimize downtime for critical structures (e.g., bridges, industrial furnaces), cutting inspection costs and preventing expensive failures. Edge deployment eliminates recurring cloud inference fees, offering a cost‐effective inspection workflow.  
+    \item \textbf{Societal Impact:}  
+    Remote imaging enhances worker safety by allowing inspectors to operate at a distance from high‐temperature zones. Democratised access to AI‐driven thermal analysis benefits communities in resource‐constrained regions, improving infrastructure reliability and public safety.
+\end{itemize}
+
+\subsection{Reflections}
+\begin{itemize}
+    \item \textbf{Technical Learning:}  
+    Implementing a Vision Transformer for thermal imagery deepened our understanding of self‐attention mechanisms and their advantages over convolutional backbones in capturing global thermal textures. Fine‐tuning ImageNet‐21k weights on a modest 2 400‐image corpus highlighted the importance of transfer learning and effective augmentation strategies.  
+    \item \textbf{User‐Centric Development:}  
+    Iterative feedback from civil engineers and field technicians guided UI refinements—particularly heat‐map overlays and confidence thresholds—ensuring that ThermoSight’s outputs aligned with real‐world inspection workflows. This user‐driven approach underlined the necessity of clear visualisations and straightforward API endpoints.  
+    \item \textbf{Resource Management:}  
+    Confronting GPU memory constraints led to adopting mixed‐precision training and gradient accumulation to accommodate larger batch sizes without sacrificing model complexity. Handling emissivity variations and noise in field‐collected infrared frames required robust pre‐processing pipelines and careful error handling for out‐of‐range samples.  
+    \item \textbf{Collaboration and Iteration:}  
+    Regular sprints facilitated close collaboration between data scientists, backend engineers, and DevOps specialists. Weekly integration tests caught deployment issues early, while Agile retrospectives improved task prioritisation. Cross‐team knowledge sharing accelerated problem‐solving, especially when aligning thermal physicists’ domain requirements with machine learning best practices.
+\end{itemize}
+
+\subsection{Future Work Plan}
+\begin{itemize}
+    \item \textbf{Dataset Expansion:}  
+    Collect higher‐resolution infrared and multispectral videos under real‐world outdoor conditions, incorporating precise emissivity metadata for various coatings to improve classification robustness.  
+    \item \textbf{Continuous Temperature Regression:}  
+    Extend the current classification head with a regression branch to predict continuous temperature values, enabling finer‐granularity safety thresholds and anomaly detection.  
+    \item \textbf{Explainability and Trust:}  
+    Integrate transformer attention visualisations and SHAP‐based attribution to highlight critical thermal regions, increasing stakeholder confidence and facilitating regulatory audits.  
+    \item \textbf{Mobile and Embedded Deployment:}  
+    Quantize and prune the ViT model for ARM‐based edge devices (e.g., NVIDIA Jetson, Raspberry Pi with Movidius), enabling offline, field‐grade thermal inspections without reliance on cloud connectivity.  
+    \item \textbf{Active Learning Loop:}  
+    Implement an annotation pipeline that flags low‐confidence or outlier predictions for human review, continuously enriching the training corpus while reducing labeling overhead.  
+    \item \textbf{Multimodal Fusion:}  
+    Fuse infrared data with visible‐light imagery and acoustic signals to mitigate emissivity‐induced ambiguity, improving detection accuracy on mixed‐material and reflective surfaces.  
+    \item \textbf{Energy‐Aware Inference:}  
+    Explore dynamic voltage/frequency scaling and adaptive batch scheduling to minimize power consumption during large‐scale inspections, making ThermoSight viable for solar‐ or battery‐powered remote deployments.
+\end{itemize}

@@ -1,0 +1,145 @@
+\noindent Navigating the maintenance and safety of construction materials under high‐temperature conditions can be challenging, especially when relying on manual inspection or intrusive sampling methods. This project, \textbf{ThermoSight}, addresses these difficulties by developing a non‐contact, AI‐powered thermal assessment system tailored to construction‐engineering workflows. By leveraging Vision Transformer (ViT) architectures, ThermoSight delivers rapid, accurate temperature classification of materials, enabling proactive maintenance and improved safety.
+
+\subsection{Project Overview}
+ThermoSight is a comprehensive framework designed to simplify thermal exposure assessment for engineers, inspectors, and maintenance crews. Traditional thermal evaluation methods—such as physical thermocouple probes or spot‐measure infrared thermometers—are often time‐consuming, require physical access to hot surfaces, and can introduce safety risks. ThermoSight overcomes these limitations by providing a fully automated, vision‐based pipeline that captures infrared imagery, processes it via a fine‐tuned ViT model, and outputs a temperature class with corresponding confidence scores.
+
+By integrating an intuitive Streamlit GUI and a RESTful API, ThermoSight offers real‐time diagnostics in field or edge environments. The system’s classification head categorizes material surface temperatures into four bands: 200 °C, 400 °C, 600 °C, and 800 °C, making it immediately actionable for inspectors. Engineers can quickly identify hotspots, schedule maintenance, and mitigate failure risks before catastrophic incidents occur.
+
+\subsubsection*{Technical Terminology}
+
+\begin{itemize}
+    \item \textbf{Infrared Thermography:} Technique for capturing the thermal radiation emitted by objects to estimate surface temperatures without physical contact.
+    \item \textbf{Vision Transformer (ViT):} A deep‐learning architecture that applies self‐attention mechanisms directly to image patches, enabling global context aggregation for classification tasks.
+    \item \textbf{Mixed‐Precision Training:} Training strategy that employs 16‐bit floating‐point (FP16) arithmetic alongside 32‐bit (FP32) to reduce memory usage and accelerate convergence.
+    \item \textbf{Grad‐CAM:} Gradient‐weighted Class Activation Mapping, a post‐hoc explainability method that highlights salient image regions influencing a model’s decision.
+    \item \textbf{TorchScript:} A PyTorch mechanism to serialize and optimize models for deployment in non‐Python environments, such as C++ or edge devices.
+    \item \textbf{Docker Container:} A lightweight, portable runtime environment that encapsulates application dependencies, ensuring consistent deployment across devices.
+    \item \textbf{PostgreSQL:} An open‐source relational database used to store metadata, inference logs, and audit trails for ThermoSight deployments.
+    \item \textbf{Streamlit:} A Python framework for building interactive web applications, used to create ThermoSight’s GUI for non‐technical end users.
+    \item \textbf{ROC‐AUC:} Receiver Operating Characteristic – Area Under the Curve, a metric to evaluate classification performance by measuring sensitivity vs. specificity trade‐offs.
+    \item \textbf{Cross‐Validation:} A statistical method to assess model generalization by partitioning data into multiple train/validation folds, ensuring unbiased performance estimates.
+\end{itemize}
+
+\subsubsection*{Problem Statement}
+Manual thermal inspection techniques present several challenges:
+
+\begin{itemize}
+    \item \textbf{Safety Risks:} Physical contact with high‐temperature surfaces can endanger inspectors and may require personal protective equipment (PPE) and shutdown procedures.
+    \item \textbf{Time Consumption:} Sampling discrete points with thermocouples or handheld infrared guns is slow and does not capture spatial temperature variations.
+    \item \textbf{Limited Coverage:} Spot measurements fail to detect localized hotspots or uneven heat distributions across large or irregular components.
+    \item \textbf{Data Logging Challenges:} Manual readings must be logged and interpreted post hoc, delaying decision‐making and increasing the chance of human error.
+\end{itemize}
+
+\subsubsection*{Goal}
+The primary goal of ThermoSight is to develop a robust, non‐contact thermal assessment tool that:
+
+\begin{itemize}
+    \item \textbf{Accurately Classifies Temperatures:} Leverage ViT to categorize materials into four temperature bands (200 °C, 400 °C, 600 °C, 800 °C) with high precision.
+    \item \textbf{Delivers Real‐Time Insights:} Provide sub‐350 ms inference per image on commodity GPUs, enabling near‐instantaneous feedback in the field.
+    \item \textbf{Enhances Safety:} Eliminate the need for inspectors to approach hot surfaces, reducing occupational hazards.
+    \item \textbf{Facilitates Decision‐Making:} Offer visual heat‐map overlays and confidence metrics to prioritize maintenance and prevent catastrophic failures.
+\end{itemize}
+
+\subsubsection*{Solution}
+To achieve these goals, ThermoSight implements:
+
+\begin{itemize}
+    \item \textbf{Infrared Image Acquisition:} Capture thermographic frames using calibrated FLIR One Pro or equivalent handheld IR cameras, ensuring emissivity correction and consistent imaging conditions.
+    \item \textbf{Pre‐Processing Pipeline:} Resize images to 460 × 460 pixels, apply median‐filtering, normalize pixel intensities, and extract 8 × 8 patches with learnable positional embeddings.
+    \item \textbf{ViT Classification Head:} Fine‐tune a 12‐layer ViT (768‐dim embeddings, 12 heads) pretrained on ImageNet‐21k, adapting it to the thermal domain through transfer learning and domain‐specific augmentations.
+    \item \textbf{Explainability Module:} Generate Grad‐CAM heat maps to highlight salient thermal regions, aiding inspectors in interpreting model outputs.
+    \item \textbf{Deployment Bundle:} Package the frozen TorchScript model inside a < 1.2 GB Docker container, exposing a FastAPI endpoint for REST‐based inference and a Streamlit front end for interactive usage.
+    \item \textbf{Logging & Audit:} Persist request metadata, inference times, and classification labels in PostgreSQL for traceability and performance monitoring.
+\end{itemize}
+
+\subsection{Need Analysis}
+Understanding the constraints of existing thermal inspection workflows reveals the necessity of ThermoSight:
+
+\subsubsection*{Safety and Efficiency Concerns}
+\begin{itemize}
+    \item \textbf{Occupational Hazards:} Inspectors frequently don PPE and maintain safe distances, leading to reduced dexterity and slower inspection cycles.
+    \item \textbf{Incomplete Coverage:} Spot measurements sample only a few points per component, risking missed hotspots or undetected stress fractures.
+    \item \textbf{Delayed Reporting:} Manual logging delays real‐time interventions, allowing minor issues to escalate into major failures.
+\end{itemize}
+
+\subsubsection*{Technical Limitations}
+\begin{itemize}
+    \item \textbf{Data Variability:} Infrared signatures vary with material emissivity, surface reflectivity, and environmental conditions, complicating pure threshold‐based methods.
+    \item \textbf{Model Generalization:} Traditional CNNs often falter when exposed to unseen thermal textures or material heterogeneity, leading to inconsistent accuracy across field scenarios.
+    \item \textbf{Deployment Constraints:} Resource‐limited edge devices struggle to run large CNNs, requiring optimized, quantized models that maintain accuracy while reducing footprint.
+\end{itemize}
+
+\subsection{Research Gaps}
+A review of existing literature and commercial solutions identified several areas for improvement:
+
+\begin{itemize}
+    \item \textbf{Fine‐Grained Heat Classification:} Most tools provide continuous temperature readings but lack automated, actionable classification into predefined risk tiers suitable for maintenance scheduling.
+    \item \textbf{Spatial Context Modeling:} CNN‐based approaches capture local texture but often miss global thermal patterns; transformer architectures can fill this gap by modeling long‐range dependencies.
+    \item \textbf{Explainability:} Off‐the‐shelf thermographic tools seldom offer interpretable visual cues (e.g., attention maps) to justify temperature predictions, reducing operator trust.
+    \item \textbf{Edge Deployment Readiness:} Few academic prototypes address containerized, GPU‐accelerated deployment pipelines, leaving a gap between research feasibility and industrial adoption.
+\end{itemize}
+
+\subsection{Problem Definition and Scope}
+
+\subsubsection*{Problem Definition}
+Inspecting and classifying thermal signatures of construction materials in a safe, efficient, and accurate manner remains a critical yet under‐served need. Manual or spot‐based methods:
+
+\begin{itemize}
+    \item Lack real‐time, spatially comprehensive evaluation.
+    \item Require physical proximity to hot surfaces, increasing risk.
+    \item Do not provide interpretable visual feedback for decision‐making.
+\end{itemize}
+
+\subsubsection*{Scope}
+ThermoSight focuses on:
+
+\begin{itemize}
+    \item \textbf{Domain:} Construction materials (steel, concrete, wood, composites) under high‐temperature exposure (200 °C–800 °C).
+    \item \textbf{Data:} 2 400 thermographic images captured under controlled furnace environments, stratified into four temperature classes.
+    \item \textbf{Modeling:} Fine‐tune a ViT base (12 layers, 768 dims, 12 heads) pretrained on ImageNet‐21k, employing augmentations like random rotation (±15°), brightness jitter (±10 %), and cutout masks.
+    \item \textbf{Deployment:} Bundle the final TorchScript model in a Docker container (< 1.2 GB) for GPU inference on edge servers or workstations; expose a REST API and a Streamlit GUI.
+    \item \textbf{Metrics:} Evaluate performance using overall accuracy, per‐class precision/recall/F1, macro‐F1, inference latency (GPU/CPU), and model size.
+    \item \textbf{Constraints:} 
+    \begin{itemize}
+        \item GPU memory limited to 24 GB, necessitating mixed‐precision training.  
+        \item Field cameras may introduce noise; robust pre‐processing is required.  
+        \item Edge devices must run inference at ≤ 500 ms per image.  
+    \end{itemize}
+\end{itemize}
+
+\subsection{Assumptions and Constraints}
+
+\subsubsection*{Assumptions}
+\begin{enumerate}
+    \item \textbf{Stable Infrared Capture:} IR cameras provide consistent frame rates (≥ 10 Hz) and calibrated emissivity settings.
+    \item \textbf{Representative Dataset:} The 2 400 images adequately capture real‐world thermal variations across materials and temperatures.
+    \item \textbf{User Access to GPU:} Field engineers have access to at least one GPU‐enabled workstation for on‐site inference; CPU‐only fallback is used only for reports, not real‐time decisions.
+\end{enumerate}
+
+\subsubsection*{Constraints}
+\begin{enumerate}
+    \item \textbf{Hardware Limitations:} Edge devices without GPUs will face increased latency (\geq 2 s per image), limiting immediate feedback.
+    \item \textbf{Environmental Variability:} Outdoor conditions (wind, rain, reflections) may introduce noise not present in controlled furnace captures.
+    \item \textbf{Regulatory Compliance:} The system must adhere to occupational safety guidelines and data privacy standards when logging images and metadata.
+\end{enumerate}
+
+\subsection{Standards}
+
+\subsubsection*{Code Standards}
+\begin{itemize}
+    \item \textbf{Clear and Modular Code:} Maintain comprehensive docstrings, use descriptive variable names, and adhere to PEP 8 linting for Python scripts.
+    \item \textbf{Unit and Integration Testing:} Achieve ≥ 95 \% branch coverage for data pipelines, model wrappers, and API endpoints using PyTest.
+    \item \textbf{Containerisation:} Docker images must be under 1.2 GB, use multi‐stage builds to minimize layers, and include only necessary dependencies.
+\end{itemize}
+
+\subsubsection*{Safety Requirements}
+\begin{itemize}
+    \item \textbf{Secure Data Transmission:} Encrypt REST API traffic using TLS 1.2+ between client GUI and server.
+    \item \textbf{Error Handling and Fallbacks:} Implement graceful degradation: if GPU inference fails, automatically switch to CPU mode with appropriate warnings.
+    \item \textbf{Regular Model Audits:} Conduct quarterly retraining and validation to account for sensor drift and evolving emissivity characteristics.
+\end{itemize}
+
+\subsubsection*{Quality Standards}
+\begin{itemize}
+    \item \textbf{Agile Development:} Utilize two‐week sprints with continuous integration (CI) to catch regressions in code, tests, and model performance.
+    \item \textbf{Performance Benchmarks:} Maintain average GPU inference latency ≤ 350 ms and CPU fallback ≤ 2.9 s per image

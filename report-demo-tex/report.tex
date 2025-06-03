@@ -1,0 +1,123 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{longtable} 
+\usepackage{tocloft} 
+\usepackage{times}
+
+\geometry{top=1in,bottom=1in,left=1.5in,right=1in}
+
+\onehalfspacing
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\chapter}[display]
+  {\bfseries\LARGE}{\chaptername\ \thechapter}{20pt}{\LARGE}
+  
+\titleformat{\section}
+  {\bfseries\Large}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\bfseries\normalsize} 
+  {\thesubsection}{1em}{}
+
+\captionsetup[table]{font=small}
+\captionsetup[figure]{font=small}
+
+\renewcommand{\cftsecfont}{\fontsize{14}{16}\selectfont}
+\renewcommand{\cftsubsecfont}{\fontsize{12}{14}\selectfont}
+
+% Start Document
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering    
+    {\Huge\bfseries MapMitra: Navigate Effortlessly \par} % Title
+    
+    \vspace{1cm}
+    {\Large\bfseries Capstone Project Report \par}
+    {\Large MID SEMESTER EVALUATION \par}
+    
+    \vspace{1cm}
+    {\large \bfseries Submitted by: \par}
+    {\large 102116122 Ansh Midha \par}
+    {\large 102116115 Leena Gupta \par}
+    {\large 102116082 Madhur Gaba \par}
+    {\large 102116106 Shourya De \par}
+    {\large 102166002 Yash Dogra \par}
+    \vspace{0.25cm}
+    {\large \bfseries BE Fourth Year, CSE \par}
+    {\large \bfseries CPG No: 149 \par}
+    
+    \vspace{1.5cm}
+    {\large \bfseries Under the Mentorship of: \par}
+    {\large Dr. Deep Mann \par}
+    {\large Dr. Aditi Sharma \par}
+    
+    \vspace{0.5cm}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.4\textwidth]{tietlogo-CjxYgEfJ.png}
+    \end{figure}
+    
+
+    \vfill
+    \bfseries{
+    {\large Computer Science and Engineering Department \par}
+    {\large Thapar Institute of Engineering and Technology, Patiala \par}
+    {\large July 2024 \par}
+    }
+\end{titlepage}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+This project aims to develop a user-friendly navigation system specifically designed for our college campus, addressing the unique challenges faced by new students, visitors, and those relying on e-rickshaws for transportation. The system emphasizes familiar landmarks to enhance user comprehension, integrates real-time e-rickshaw tracking, and offers a stress-free navigation experience for the campus community.
+\newpage
+
+\chapter*{Declaration}
+\addcontentsline{toc}{chapter}{Declaration}
+We hereby declare that the design principles and working prototype model of the project entitled MapMitra is an authentic record of our own work carried out in the Computer Science and Engineering Department, TIET, Patiala, under the guidance of Dr. Deep Mann and Dr. Aditi Sharma.
+\newline
+\newline
+\textbf{Signed by:} \newline
+102116122 Ansh Midha \newline
+102116115 Leena Gupta \newline
+102116082 Madhur Gaba \newline
+102116106 Shourya De \newline
+102166002 Yash Dogra \newline
+\newpage
+
+\tableofcontents
+\newpage
+
+
+
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+We would like to express our gratitude to our mentors Dr. Deep Mann and Dr. Aditi Sharma for their invaluable guidance. We also thank our department and peers who have contributed directly or indirectly towards this project.
+\newpage
+
+\chapter{Introduction}
+\section{Project Overview}
+Navigating a college campus can be challenging, particularly for newcomers and visitors. MapMitra is designed to address these challenges by developing a comprehensive and intuitive navigation system, emphasizing campus landmarks and real-time e-rickshaw tracking to enhance mobility and navigation.
+\newpage
+
+% (Continue the rest of the sections similarly as needed)
+
+\chapter*{References}
+\addcontentsline{toc}{chapter}{References}
+1. Wang, X., Wang, W., Shao, J., and Yang, Y. (2023). LaNA: A Language-Capable Navigator for Instruction Following and Generation. arXiv preprint. Retrieved from https://arxiv.org/abs/2303.08409 \newline
+2. Nayak, et al. (2011). Towards a Cognitive Model for Human Wayfinding Behaviour. AAAI. Retrieved from https://aaai.org/papers/04124-4124-towards-a-cognitive-model-for-human-wayfinding-behavior.
+\newline
+3. Duckham, M., Winter, S., and Robinson, M. (2010). Including landmarks in routing instructions. Journal of Location Based Services, 4(1), 28-52.
+\newpage
+
+\end{document}
