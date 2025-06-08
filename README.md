@@ -1,11 +1,3 @@
-# 🔥 ThermoSight LaTeX Capstone Report
-
-Welcome to the official repository for the ThermoSight Capstone Project Report! This repository contains all LaTeX source code, assets, and instructions to compile a professional academic report using a custom document class.
-
-<!-- Optionally add a logo/banner here -->
-<!-- ![ThermoSight Banner](path/to/banner.png) -->
-
----
 
 ## 🚀 Overview
 
